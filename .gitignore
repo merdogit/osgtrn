@@ -1,0 +1,22 @@
+# Ignore large data folders
+OsgEarth-Data/
+OpenSceneGraph-Data/
+
+# Build and CMake
+build/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# IDE/editor files
+.vscode/
+*.code-workspace
+
+# Compiled binaries/libs
+*.o
+*.a
+*.so
+*.dll
+*.exe
+*.out
