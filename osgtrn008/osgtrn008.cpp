@@ -1,60 +1,59 @@
-#include <osg/Texture2D>
-#include <osg/Geode>
-#include <osg/Geometry>
-#include <osg/ShapeDrawable>
-#include <osg/StateSet>
+#include <osg/Node>
 #include <osg/Group>
+#include <osg/MatrixTransform>
 #include <osgDB/ReadFile>
 #include <osgViewer/Viewer>
+#include <iostream>
 
-int main(int argc, char **argv)
-{
-    // Load the image file
-    osg::ref_ptr<osg::Image> image =
-        osgDB::readImageFile("/home/murate/Documents/SwTrn/OsgTrn/OpenSceneGraph-Data/ground-mud-puddle-4096x4096.jpg");
+// Search recursively for a node by name
+osg::ref_ptr<osg::Node> findNodeByName(const std::string& name, osg::Node* root) {
+    if (!root) return nullptr;
 
-    if (!image)
-    {
-        std::cerr << "Failed to load image!" << std::endl;
+    if (root->getName() == name) {
+        return root;
+    }
+
+    osg::Group* group = root->asGroup();
+    if (group) {
+        for (unsigned int i = 0; i < group->getNumChildren(); ++i) {
+            osg::ref_ptr<osg::Node> found = findNodeByName(name, group->getChild(i));
+            if (found) return found;
+        }
+    }
+    return nullptr;
+}
+
+int main(int argc, char** argv) {
+    std::string filename = (argc > 1) ? argv[1] : "/home/murate/Documents/SwTrn/OsgTrn/OpenSceneGraph-Data/F-14-low-poly-osg.ac";
+    osg::ref_ptr<osg::Node> root = osgDB::readNodeFile(filename);
+    if (!root) {
+        std::cerr << "Failed to load " << filename << std::endl;
         return 1;
     }
 
-    // Create texture from image
-    osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D;
-    texture->setImage(image);
+    // Find the UC-R landing gear
+    osg::ref_ptr<osg::Node> gearNode = findNodeByName("UC-R", root);
+    if (gearNode) {
+        std::cout << "Found UC-R landing gear!" << std::endl;
 
-    // Create a textured quad (plane)
-    osg::ref_ptr<osg::Geometry> quad = osg::createTexturedQuadGeometry(
-        osg::Vec3(-5.0f, 0.0f, -5.0f), // corner position
-        osg::Vec3(10.0f, 0.0f, 0.0f),  // width vector
-        osg::Vec3(0.0f, 0.0f, 10.0f)   // height vector
-    );
+        // Wrap it inside a MatrixTransform so we can animate it
+        osg::ref_ptr<osg::MatrixTransform> gearTransform = new osg::MatrixTransform;
+        osg::Group* parent = gearNode->getParent(0);
+        if (parent) {
+            parent->replaceChild(gearNode, gearTransform);  // replace original with transform
+            gearTransform->addChild(gearNode);
+        }
 
-    osg::ref_ptr<osg::Geode> geode = new osg::Geode;
-    geode->addDrawable(quad);
-
-    // Apply texture to quad
-    osg::StateSet *stateSet = geode->getOrCreateStateSet();
-    stateSet->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
-
-    // Path to OSG sample data (Debian installs here)
-    std::string dataPath = "/home/murate/Documents/SwTrn/OsgTrn/OpenSceneGraph-Data/F-14-low-poly-osg.ac";
-
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(dataPath);
-    if (!model)
-    {
-        std::cerr << "Failed to load model from: " << dataPath << std::endl;
-        return 1;
+        // Example: translate the gear down (like lowering it)
+        osg::Matrix m;
+        m.makeTranslate(0.0f, 0.0f, -2.0f); // move down 2 units
+        gearTransform->setMatrix(m);
+    } else {
+        std::cout << "UC-R not found!" << std::endl;
     }
 
-    // Create scene root
-    osg::ref_ptr<osg::Group> root = new osg::Group;
-    root->addChild(geode);
-    root->addChild(model);
-
-    // Viewer
+    // Show the model
     osgViewer::Viewer viewer;
-    viewer.setSceneData(root);
-
+    viewer.setSceneData(root.get());
     return viewer.run();
 }

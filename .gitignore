@@ -1,6 +1,7 @@
 # Ignore large data folders
 OsgEarth-Data/
 OpenSceneGraph-Data/
+osgcookbook
 
 # Build and CMake
 build/
