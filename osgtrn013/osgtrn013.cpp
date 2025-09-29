@@ -159,6 +159,11 @@ public:
         osg::Matrix mat = _motion->getTransform()->getMatrix();
         osg::Vec3d planePos = mat.getTrans();
 
+        std::cout << "planePosX: " << planePos.x() << '\n';
+        std::cout << "planePosY: " << planePos.y() << '\n';
+        std::cout << "planePosZ: " << planePos.z() << '\n';
+
+
         osg::Quat yawFix(osg::DegreesToRadians(90.0), osg::Vec3(0, 0, 1));
 
         switch (*_currentView)
@@ -167,15 +172,11 @@ public:
             eye = planePos + osg::Vec3d(0.0, -50.0, 20.0);;
             center = planePos + osg::Vec3d(0.0, 0.0, 5.0);
             up = osg::Vec3d(0.0, 0.0, 1.0);
-            eye = yawFix * eye;
-            up = yawFix * up;
             break;
         case CameraView::Chase:
             eye = planePos + osg::Vec3d(0.0, 50.0, 20.0);
             center = planePos + osg::Vec3d(0.0, 0.0, 5.0);
             up = osg::Vec3d(0.0, 0.0, 1.0);
-            eye = yawFix * eye;
-            up = yawFix * up;
             break;
         case CameraView::Top:
             eye = planePos + osg::Vec3d(0.0, 0.0, 150.0);
@@ -184,7 +185,7 @@ public:
             break;
         }
 
-        _manip->setHomePosition(eye, center, up, false);
+        _manip->setHomePosition(-eye, -center, up, false);
         _manip->home(0.0);
 
         traverse(node, nv);
