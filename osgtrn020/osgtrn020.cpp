@@ -100,7 +100,7 @@ int main()
     osg::ref_ptr<osg::Group> root = new osg::Group();
 
     std::string dataPath = "/home/murate/Documents/SwTrn/OsgTrn/OpenSceneGraph-Data/";
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(dataPath + "F-14-low-poly-no-land-gear.ac");
+    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(dataPath + "AIM-9L.ac");
     if (!model)
     {
         std::cerr << "Cannot load model\n";
@@ -113,7 +113,7 @@ int main()
     osg::ref_ptr<osg::Node> refAxes = osgDB::readNodeFile(dataPath + "axes.osgt");
     osg::ref_ptr<osg::MatrixTransform> refAxesXForm = new osg::MatrixTransform;
     refAxesXForm->addChild(refAxes);
-    refAxesXForm->setMatrix(osg::Matrix::scale(15.0f, 15.0f, 15.0f));
+    refAxesXForm->setMatrix(osg::Matrix::scale(2.0f, 2.0f, 2.0f));
 
     root->addChild(modelXForm);
     root->addChild(refAxesXForm);

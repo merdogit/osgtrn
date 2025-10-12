@@ -8,9 +8,9 @@ int main()
     osgViewer::Viewer viewer;
 
     // Path to OSG sample data (Debian installs here)
-    std::string dataPath = "/home/murate/Documents/SwTrn/OsgTrn/OpenSceneGraph-Data/blender-xyz.ac";
+    std::string dataPath = "/home/murate/Documents/SwTrn/OsgTrn/OpenSceneGraph-Data/";
 
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(dataPath);
+    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(dataPath + "cessna.osgt");
     if (!model)
     {
         std::cerr << "Failed to load model from: " << dataPath << std::endl;
