@@ -5,6 +5,7 @@
 #include <osgViewer/Viewer>
 #include <osgDB/ReadFile>
 #include <osg/Timer>
+#include <osgViewer/Viewer>
 #include <cmath>
 
 // ========================= Text Size Update Callback =========================
@@ -123,6 +124,8 @@ int main(int argc, char** argv)
 
     root->addChild(cessnaXform);
     viewer.setSceneData(root);
+    viewer.setUpViewInWindow(100, 100, 600, 600);
+
     viewer.realize();
     return viewer.run();
 }
