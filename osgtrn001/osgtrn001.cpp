@@ -10,7 +10,7 @@ int main()
     // Path to OSG sample data (Debian installs here)
     std::string dataPath = "/home/murate/Documents/SwTrn/OsgTrn/OpenSceneGraph-Data/";
 
-    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(dataPath + "cessna.osgt");
+    osg::ref_ptr<osg::Node> model = osgDB::readNodeFile(dataPath + "F-14-low-poly.ac");
     if (!model)
     {
         std::cerr << "Failed to load model from: " << dataPath << std::endl;
